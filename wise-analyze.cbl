@@ -26,9 +26,28 @@
        WORKING-STORAGE SECTION.
        01  FILE-NAME               PIC X(100).
        01  TRIMMED-FILENAME        PIC X(100).
-       01  NAME-FIELD              PIC X(30).
-       01  MONEY-FIELD             PIC X(10).
-       01  DATE-FIELD              PIC X(10).
+
+      * CSV HEADERS
+       01  TRANSFERWISE-ID-FIELD       PIC X(30).
+       01  DATE-FIELD                  PIC X(30).
+       01  AMOUNT-FIELD                PIC X(30).
+       01  CURRENCY-FIELD              PIC X(30).
+       01  DESCRIPTION-FIELD           PIC X(100).
+       01  PAYMENT-REFERENCE-FIELD     PIC X(30).
+       01  RUNNING-BALANCE-FIELD       PIC X(30).
+       01  EXCHANGE-FROM-FIELD         PIC X(30).
+       01  EXCHANGE-TO-FIELD           PIC X(30).
+       01  EXCHANGE-RATE-FIELD         PIC X(30).
+       01  PAYER-NAME-FIELD            PIC X(30).
+       01  PAYEE-NAME-FIELD            PIC X(30).
+       01  PAYEE-ACCOUNT-NUMBER-FIELD  PIC X(30).
+       01  MERCHANT-FIELD              PIC X(30).
+       01  CARD-LAST-FOUR-DIGITS-FIELD PIC X(30).
+       01  CARD-HOLDER-FULL-NAME-FIELD PIC X(30).
+       01  ATTACHMENT-FIELD            PIC X(30).
+       01  NOTE-FIELD                  PIC X(30).
+       01  TOTAL-FEES-FIELD            PIC X(30).
+       01  EXCHANGE-TO-AMOUNT-FIELD    PIC X(30).
 
        01  MONEY-NUMERIC           PIC 9(7)V99 VALUE 0.
        01  TOTAL-MONEY             PIC 9(9)V99 VALUE 0.
@@ -64,12 +83,20 @@
                    NOT AT END
                        UNSTRING CSV-RECORD
                            DELIMITED BY ","
-                           INTO NAME-FIELD, MONEY-FIELD, DATE-FIELD
+                           INTO TRANSFERWISE-ID-FIELD, DATE-FIELD,
+                           AMOUNT-FIELD, CURRENCY-FIELD,
+                           DESCRIPTION-FIELD, PAYMENT-REFERENCE-FIELD,
+                           RUNNING-BALANCE-FIELD, EXCHANGE-FROM-FIELD,
+                           EXCHANGE-TO-FIELD, EXCHANGE-RATE-FIELD,
+                           PAYER-NAME-FIELD, PAYEE-NAME-FIELD,
+                           PAYEE-ACCOUNT-NUMBER-FIELD, MERCHANT-FIELD,
+                           CARD-LAST-FOUR-DIGITS-FIELD,
+                           CARD-HOLDER-FULL-NAME-FIELD,
+                           ATTACHMENT-FIELD, NOTE-FIELD,
+                           TOTAL-FEES-FIELD, EXCHANGE-TO-AMOUNT-FIELD
 
-                       MOVE FUNCTION NUMVAL(MONEY-FIELD)
+                       MOVE FUNCTION NUMVAL(AMOUNT-FIELD)
                        TO MONEY-NUMERIC
-
-                       DISPLAY MONEY-FIELD
 
                        ADD MONEY-NUMERIC TO TOTAL-MONEY
                        ADD 1 TO RECORD-COUNT
@@ -80,7 +107,7 @@
 
            IF RECORD-COUNT NOT = 0
                COMPUTE AVERAGE-MONEY = TOTAL-MONEY / RECORD-COUNT
-               DISPLAY "Average price: " AVERAGE-MONEY
+               DISPLAY "Average transaction amount: " AVERAGE-MONEY
            ELSE
                DISPLAY "No records found."
            END-IF
