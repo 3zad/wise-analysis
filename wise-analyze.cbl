@@ -30,7 +30,11 @@
        01  MONEY-FIELD             PIC X(10).
        01  DATE-FIELD              PIC X(10).
 
-      *01  DELIMITER               PIC X VALUE ",".
+       01  MONEY-NUMERIC           PIC 9(7)V99 VALUE 0.
+       01  TOTAL-MONEY             PIC 9(9)V99 VALUE 0.
+       01  RECORD-COUNT            PIC 9(5) VALUE 0.
+       01  AVERAGE-MONEY           PIC 9(7)V99 VALUE 0.
+
        01  EOF-REACHED             PIC X VALUE "N".
 
       *-----------------------
@@ -47,7 +51,39 @@
 
            OPEN INPUT CSV-FILE
 
+      * Skip the first line (the header)
+           READ CSV-FILE
+               AT END
+                  MOVE "Y" TO EOF-REACHED
+           END-READ
+
+           PERFORM UNTIL EOF-REACHED = "Y"
+               READ CSV-FILE
+                   AT END
+                       MOVE "Y" TO EOF-REACHED
+                   NOT AT END
+                       UNSTRING CSV-RECORD
+                           DELIMITED BY ","
+                           INTO NAME-FIELD, MONEY-FIELD, DATE-FIELD
+
+                       MOVE FUNCTION NUMVAL(MONEY-FIELD)
+                       TO MONEY-NUMERIC
+
+                       DISPLAY MONEY-FIELD
+
+                       ADD MONEY-NUMERIC TO TOTAL-MONEY
+                       ADD 1 TO RECORD-COUNT
+               END-READ
+           END-PERFORM
+
            CLOSE CSV-FILE
+
+           IF RECORD-COUNT NOT = 0
+               COMPUTE AVERAGE-MONEY = TOTAL-MONEY / RECORD-COUNT
+               DISPLAY "Average price: " AVERAGE-MONEY
+           ELSE
+               DISPLAY "No records found."
+           END-IF
 
            STOP RUN.
        END PROGRAM WISE-ANALYZE.

@@ -1,0 +1,31 @@
+# Ignore compiled COBOL files
+*.gnt
+*.gno
+*.gcb
+*.exe
+*.dll
+*.out
+
+# Ignore temporary files and directories
+*.bak
+*.swp
+*.tmp
+*.log
+*.obj
+
+# Ignore IDE/editor-specific files
+.vscode/
+.idea/
+*.iml
+*.user
+*.project
+
+# Ignore backup files
+*~
+
+# Ignore output directories
+/bin/
+/build/
+
+# Ignore core dump files
+core.*
