@@ -52,7 +52,7 @@
        01  MONEY-NUMERIC           PIC 9(7)V99 VALUE 0.
        01  TOTAL-MONEY             PIC 9(9)V99 VALUE 0.
        01  RECORD-COUNT            PIC 9(5) VALUE 0.
-       01  AVERAGE-MONEY           PIC 9(7)V99 VALUE 0.
+       77  AVERAGE-MONEY           PIC Z(8).99 VALUE 0.
 
        01  EOF-REACHED             PIC X VALUE "N".
 
@@ -107,6 +107,7 @@
 
            IF RECORD-COUNT NOT = 0
                COMPUTE AVERAGE-MONEY = TOTAL-MONEY / RECORD-COUNT
+
                DISPLAY "Average transaction amount: " AVERAGE-MONEY
            ELSE
                DISPLAY "No records found."
